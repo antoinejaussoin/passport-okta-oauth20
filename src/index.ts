@@ -1,1 +1,6 @@
-export { default as Strategy } from "./Strategy";
+export {
+  default as Strategy,
+  OktaProfile,
+  OktaProfileEmail,
+  OktaStrategyOptions,
+} from "./Strategy";

@@ -1,8 +1,7 @@
 import { Strategy, StrategyOptions, InternalOAuthError } from "passport-oauth2";
-import uid from "uid2";
 import queryString from "querystring";
 
-type OktaStrategyOptions = {
+export type OktaStrategyOptions = {
   audience: string;
   clientID: string;
   clientSecret: string;
@@ -12,20 +11,24 @@ type OktaStrategyOptions = {
   callbackURL: string;
 };
 
-type OktaProfileEmail = { value: string };
+export type OktaProfileEmail = { value: string };
 
-type OktaProfile = {
+export type OktaProfile = {
   id: string;
   displayName: string;
   username: string;
+  locale: string;
+  zoneInfo: string;
+  updatedAt: number;
+  emailVerified: boolean;
   name: {
     fullName: string;
     familyName: string;
     givenName: string;
   };
   emails: OktaProfileEmail[];
-  _raw: any;
-  _json: string;
+  _raw: string;
+  _json: unknown;
 };
 
 type OktaCallback = (
@@ -38,7 +41,6 @@ type OktaCallback = (
 type InternalStrategyOptions = OktaStrategyOptions &
   StrategyOptions & {
     userInfoUrl: string;
-    nonce: string;
   };
 
 class OktaStrategy extends Strategy {
@@ -60,7 +62,7 @@ class OktaStrategy extends Strategy {
       tokenURL: options.audience + "/oauth2/v1/token",
       userInfoUrl: options.audience + "/oauth2/v1/userinfo",
       state: true,
-      nonce: uid(24),
+      // nonce: uid(24),
     };
     this._oauth2.getOAuthAccessToken = (code, params, callback?: Function) => {
       const _params: any = params || {};
@@ -129,6 +131,7 @@ class OktaStrategy extends Strategy {
         }
         try {
           const json = JSON.parse(body as string);
+
           const profile: OktaProfile = {
             id: json.sub,
             displayName: json.name,
@@ -139,7 +142,11 @@ class OktaStrategy extends Strategy {
               givenName: json.given_name,
             },
             emails: [{ value: json.email }],
-            _raw: body,
+            zoneInfo: json.zoneinfo,
+            updatedAt: json.updated_at,
+            emailVerified: json.email_verified,
+            locale: json.locale,
+            _raw: body as string,
             _json: json,
           };
           done(null, profile);
