@@ -1,2 +1,10 @@
 # passport-okta-oauth20
-Okta OAuth provider for Password and TypeScript support
+
+[Okta](https://www.okta.com) OAuth provider for [Password](https://www.passportjs.org) with TypeScript support.
+
+## Installation
+
+`npm i passport-okta-oauth20` or `yarn add passport-okta-oauth20`.
+
+## Usage
+

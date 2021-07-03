@@ -23,6 +23,6 @@
     "lib": ["es2015", "es2017", "dom"],
     "baseUrl": "."
   },
-  "include": ["src", "./package.json"],
+  "include": ["src"],
   "exclude" : ["src/**/*.test.ts"], 
 }
