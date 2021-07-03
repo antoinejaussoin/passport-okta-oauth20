@@ -4,7 +4,8 @@
   "description": "An Okta OAuth 2.0 provider for Passport",
   "main": "dist/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "yarn jest ./src",
+    "test-watch": "yarn test --watch",
     "build": "tsc --build"
   },
   "repository": {
@@ -26,13 +27,15 @@
   },
   "homepage": "https://github.com/antoinejaussoin/passport-okta-oauth20#readme",
   "dependencies": {
-    "@types/passport-oauth2": "^1.4.10",
-    "@types/uid2": "^0.0.0",
-    "passport-oauth": "^1.0.0",
     "passport-oauth2": "^1.6.0",
-    "querystring": "^0.2.1",
+    "querystring": "^0.2.1"
+  },
+  "devDependencies": {
+    "@types/passport-oauth2": "^1.4.10",
+    "@types/jest": "^26.0.23",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.5",
-    "uid2": "^0.0.3"
+    "typescript": "^4.3.5"
   }
 }

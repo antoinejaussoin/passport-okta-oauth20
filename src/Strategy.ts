@@ -62,7 +62,6 @@ class OktaStrategy extends Strategy {
       tokenURL: options.audience + "/oauth2/v1/token",
       userInfoUrl: options.audience + "/oauth2/v1/userinfo",
       state: true,
-      // nonce: uid(24),
     };
     this._oauth2.getOAuthAccessToken = (code, params, callback?: Function) => {
       const _params: any = params || {};
@@ -157,7 +156,8 @@ class OktaStrategy extends Strategy {
     );
   }
 
-  authorizationParams(options: any): any {
+  authorizationParams(options: unknown): any {
+    console.log("Auth params: ", options);
     const params: any = {};
     if (this.options.identityProvider) {
       params["idp"] = this.options.identityProvider;
