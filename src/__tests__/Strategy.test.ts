@@ -11,7 +11,7 @@ const fakeOptions: OktaStrategyOptions = {
 
 describe('Okta Strategy', () => {
   it('Should return the correct Strategy name', () => {
-    const strategy = new Strategy(fakeOptions, () => {});
+    const strategy = new Strategy(fakeOptions, console.log);
     expect(strategy.name).toBe('okta');
   });
 });

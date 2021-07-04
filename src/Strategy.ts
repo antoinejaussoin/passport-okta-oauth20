@@ -2,11 +2,13 @@ import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
 import queryString from 'querystring';
 import { OktaProfile, OktaStrategyOptions } from './types';
 
+type DoneCallback = (err?: Error | null | undefined, profile?: any) => void;
+
 type OktaCallback = (
   accessToken: string,
   refreshToken: string,
   profile: OktaProfile,
-  done: Function
+  done: DoneCallback
 ) => void;
 
 type InternalStrategyOptions = OktaStrategyOptions &
@@ -38,7 +40,11 @@ class OktaStrategy extends Strategy {
       userInfoUrl: options.audience + '/oauth2/v1/userinfo',
       state: true,
     };
-    this._oauth2.getOAuthAccessToken = (code, params, callback?: Function) => {
+    this._oauth2.getOAuthAccessToken = (
+      code,
+      params,
+      callback?: (...params: any[]) => void
+    ) => {
       const _params: any = params || {};
       const _codeParam =
         params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
@@ -60,7 +66,7 @@ class OktaStrategy extends Strategy {
         postHeaders,
         postData,
         null,
-        function (error, data, response) {
+        function (error, data, _response) {
           if (error && callback) {
             callback(error);
           } else {
@@ -88,7 +94,7 @@ class OktaStrategy extends Strategy {
     };
   }
 
-  userProfile(accessToken: string, done: Function) {
+  userProfile(accessToken: string, done: DoneCallback) {
     const postHeaders = { Authorization: 'Bearer ' + accessToken };
     // @ts-ignore
     this._oauth2._request(
@@ -97,7 +103,7 @@ class OktaStrategy extends Strategy {
       postHeaders,
       '',
       null,
-      function (err, body, res) {
+      function (err, body, _res) {
         if (err) {
           return done(
             new InternalOAuthError('failed to fetch user profile', err)
