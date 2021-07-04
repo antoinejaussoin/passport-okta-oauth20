@@ -1,6 +1,6 @@
-import { Strategy, StrategyOptions, InternalOAuthError } from "passport-oauth2";
-import queryString from "querystring";
-import { OktaProfile, OktaStrategyOptions } from "./types";
+import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
+import queryString from 'querystring';
+import { OktaProfile, OktaStrategyOptions } from './types';
 
 type OktaCallback = (
   accessToken: string,
@@ -19,42 +19,42 @@ type AuthorizationParams = {
 };
 
 class OktaStrategy extends Strategy {
-  public name = "okta";
+  public name = 'okta';
   private options: InternalStrategyOptions;
   constructor(options: OktaStrategyOptions, verify: OktaCallback) {
     super(
       {
         ...options,
-        authorizationURL: options.audience + "/oauth2/v1/authorize",
-        tokenURL: options.audience + "/oauth2/v1/token",
+        authorizationURL: options.audience + '/oauth2/v1/authorize',
+        tokenURL: options.audience + '/oauth2/v1/token',
         state: true,
       },
       verify
     );
     this.options = {
       ...options,
-      authorizationURL: options.audience + "/oauth2/v1/authorize",
-      tokenURL: options.audience + "/oauth2/v1/token",
-      userInfoUrl: options.audience + "/oauth2/v1/userinfo",
+      authorizationURL: options.audience + '/oauth2/v1/authorize',
+      tokenURL: options.audience + '/oauth2/v1/token',
+      userInfoUrl: options.audience + '/oauth2/v1/userinfo',
       state: true,
     };
     this._oauth2.getOAuthAccessToken = (code, params, callback?: Function) => {
       const _params: any = params || {};
       const _codeParam =
-        params.grant_type === "refresh_token" ? "refresh_token" : "code";
+        params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
       params[_codeParam] = code;
       const postData = queryString.stringify(_params);
       const postHeaders = {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization:
-          "Basic: " +
-          Buffer.from(options.clientID + ":" + options.clientSecret).toString(
-            "base64"
+          'Basic: ' +
+          Buffer.from(options.clientID + ':' + options.clientSecret).toString(
+            'base64'
           ),
       };
       // @ts-ignore
       this._oauth2._request(
-        "POST",
+        'POST',
         // @ts-ignore
         this._oauth2._getAccessTokenUrl(),
         postHeaders,
@@ -76,9 +76,9 @@ class OktaStrategy extends Strategy {
               // being thrown
               results = queryString.parse(data as string);
             }
-            var access_token = results["access_token"];
-            var refresh_token = results["refresh_token"];
-            delete results["refresh_token"];
+            var access_token = results['access_token'];
+            var refresh_token = results['refresh_token'];
+            delete results['refresh_token'];
             if (callback) {
               callback(null, access_token, refresh_token, results); // callback results =-=
             }
@@ -89,18 +89,18 @@ class OktaStrategy extends Strategy {
   }
 
   userProfile(accessToken: string, done: Function) {
-    const postHeaders = { Authorization: "Bearer " + accessToken };
+    const postHeaders = { Authorization: 'Bearer ' + accessToken };
     // @ts-ignore
     this._oauth2._request(
-      "POST",
+      'POST',
       this.options.userInfoUrl,
       postHeaders,
-      "",
+      '',
       null,
       function (err, body, res) {
         if (err) {
           return done(
-            new InternalOAuthError("failed to fetch user profile", err)
+            new InternalOAuthError('failed to fetch user profile', err)
           );
         }
         try {

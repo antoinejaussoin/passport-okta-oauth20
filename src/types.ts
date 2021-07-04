@@ -1,5 +1,4 @@
-
-export type OktaScopes = "openid" | "email" | "profile" | string;
+export type OktaScopes = 'openid' | 'email' | 'profile' | string;
 
 export type OktaStrategyOptions = {
   /**
