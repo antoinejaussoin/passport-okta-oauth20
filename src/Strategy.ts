@@ -1,0 +1,147 @@
+import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
+import queryString from 'querystring';
+import { OktaProfile, OktaStrategyOptions } from './types';
+
+type DoneCallback = (
+  err?: Error | null | undefined,
+  profile?: OktaProfile
+) => void;
+
+type OktaCallback = (
+  accessToken: string,
+  refreshToken: string,
+  profile: OktaProfile,
+  done: DoneCallback
+) => void;
+
+type InternalStrategyOptions = OktaStrategyOptions &
+  StrategyOptions & {
+    userInfoUrl: string;
+  };
+
+type AuthorizationParams = {
+  idp?: string;
+};
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type Oauth2tokenCallback = (...params: any[]) => void;
+
+class OktaStrategy extends Strategy {
+  public name = 'okta';
+  private options: InternalStrategyOptions;
+  constructor(options: OktaStrategyOptions, verify: OktaCallback) {
+    super(
+      {
+        ...options,
+        authorizationURL: options.audience + '/oauth2/v1/authorize',
+        tokenURL: options.audience + '/oauth2/v1/token',
+        state: true,
+      },
+      verify
+    );
+    this.options = {
+      ...options,
+      authorizationURL: options.audience + '/oauth2/v1/authorize',
+      tokenURL: options.audience + '/oauth2/v1/token',
+      userInfoUrl: options.audience + '/oauth2/v1/userinfo',
+      state: true,
+    };
+    this._oauth2.getOAuthAccessToken = (
+      code,
+      params,
+      callback?: Oauth2tokenCallback
+    ) => {
+      const _params: { grant_type: string } = params || {};
+      const _codeParam =
+        params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
+      params[_codeParam] = code;
+      const postData = queryString.stringify(_params);
+      const postHeaders = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization:
+          'Basic: ' +
+          Buffer.from(options.clientID + ':' + options.clientSecret).toString(
+            'base64'
+          ),
+      };
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
+      // @ts-ignore
+      this._oauth2._request(
+        'POST',
+        /* eslint-disable @typescript-eslint/ban-ts-comment */
+        // @ts-ignore
+        this._oauth2._getAccessTokenUrl(),
+        postHeaders,
+        postData,
+        null,
+        function (error, data, _response) {
+          if (error && callback) {
+            callback(error);
+          } else {
+            const results = JSON.parse(data as string);
+            const access_token = results['access_token'];
+            const refresh_token = results['refresh_token'];
+            delete results['refresh_token'];
+            if (callback) {
+              callback(null, access_token, refresh_token, results); // callback results =-=
+            }
+          }
+        }
+      );
+    };
+  }
+
+  userProfile(accessToken: string, done: DoneCallback): void {
+    const postHeaders = { Authorization: 'Bearer ' + accessToken };
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    // @ts-ignore
+    this._oauth2._request(
+      'POST',
+      this.options.userInfoUrl,
+      postHeaders,
+      '',
+      null,
+      function (err, body, _res) {
+        if (err) {
+          return done(
+            new InternalOAuthError('failed to fetch user profile', err)
+          );
+        }
+        try {
+          const json = JSON.parse(body as string);
+
+          const profile: OktaProfile = {
+            id: json.sub,
+            displayName: json.name,
+            username: json.preferred_username,
+            name: {
+              fullName: json.name,
+              familyName: json.family_name,
+              givenName: json.given_name,
+            },
+            emails: [{ value: json.email }],
+            zoneInfo: json.zoneinfo,
+            updatedAt: json.updated_at,
+            emailVerified: json.email_verified,
+            locale: json.locale,
+            _raw: body as string,
+            _json: json,
+          };
+          done(null, profile);
+        } catch (e) {
+          done(e);
+        }
+      }
+    );
+  }
+
+  authorizationParams(): AuthorizationParams {
+    const params: AuthorizationParams = {};
+    if (this.options.identityProvider) {
+      params.idp = this.options.identityProvider;
+    }
+    return params;
+  }
+}
+
+export default OktaStrategy;
