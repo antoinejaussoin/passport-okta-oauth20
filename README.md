@@ -57,6 +57,12 @@ Example profile:
 
 ## Change Log
 
+### Version 1.0.1
+
+- Testing on Node 12, 14 and 16
+- Replace `.npmignore` by a whitelist (`files`) in `package.json`
+- Restrict to Node >= 12 (but will probably work with older version)
+
 ### Version 1.0.0
 
 - Functional parity with [passport-okta-oauth](https://github.com/techstars-archive/passport-okta-oauth)
