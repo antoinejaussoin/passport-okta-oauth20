@@ -1,5 +1,6 @@
 import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
 import { OktaProfile, OktaStrategyOptions } from './types';
+import fetch from 'node-fetch';
 
 type DoneCallback = (
   err?: Error | null | undefined,
@@ -43,24 +44,18 @@ class OktaStrategy extends Strategy {
   }
 
   userProfile(accessToken: string, done: DoneCallback): void {
-    const postHeaders = { Authorization: 'Bearer ' + accessToken };
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    // @ts-ignore
-    this._oauth2._request(
-      'POST',
-      this.options.userInfoUrl,
-      postHeaders,
-      '',
-      null,
-      function (err, body, _res) {
-        if (err) {
+    fetch(this.options.userInfoUrl, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + accessToken },
+    }).then((response) => {
+      if (!response.ok) {
+        response.text().then((err) => {
           return done(
             new InternalOAuthError('Error while fetching the user profile', err)
           );
-        }
-        try {
-          const json = JSON.parse(body as string);
-
+        });
+      } else {
+        response.json().then((json) => {
           const profile: OktaProfile = {
             id: json.sub,
             displayName: json.name,
@@ -75,15 +70,13 @@ class OktaStrategy extends Strategy {
             updatedAt: json.updated_at,
             emailVerified: json.email_verified,
             locale: json.locale,
-            _raw: body as string,
+            _raw: JSON.stringify(json),
             _json: json,
           };
           done(null, profile);
-        } catch (e) {
-          done(e);
-        }
+        });
       }
-    );
+    });
   }
 
   authorizationParams(): AuthorizationParams {
