@@ -2,7 +2,10 @@ import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
 import queryString from 'querystring';
 import { OktaProfile, OktaStrategyOptions } from './types';
 
-type DoneCallback = (err?: Error | null | undefined, profile?: any) => void;
+type DoneCallback = (
+  err?: Error | null | undefined,
+  profile?: OktaProfile
+) => void;
 
 type OktaCallback = (
   accessToken: string,
@@ -19,6 +22,13 @@ type InternalStrategyOptions = OktaStrategyOptions &
 type AuthorizationParams = {
   idp?: string;
 };
+
+type Oauth2tokenCallback = (
+  err: { statusCode: number; data?: unknown } | null,
+  access_token?: string,
+  refresh_token?: string,
+  result?: unknown
+) => void;
 
 class OktaStrategy extends Strategy {
   public name = 'okta';
@@ -43,7 +53,7 @@ class OktaStrategy extends Strategy {
     this._oauth2.getOAuthAccessToken = (
       code,
       params,
-      callback?: (...params: any[]) => void
+      callback?: Oauth2tokenCallback
     ) => {
       const _params: any = params || {};
       const _codeParam =
@@ -68,7 +78,7 @@ class OktaStrategy extends Strategy {
         null,
         function (error, data, _response) {
           if (error && callback) {
-            callback(error);
+            callback(error, '', '', null);
           } else {
             let results;
             try {
