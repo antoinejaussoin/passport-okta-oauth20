@@ -23,12 +23,8 @@ type AuthorizationParams = {
   idp?: string;
 };
 
-type Oauth2tokenCallback = (
-  err: { statusCode: number; data?: unknown } | null,
-  access_token?: string,
-  refresh_token?: string,
-  result?: unknown
-) => void;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type Oauth2tokenCallback = (...params: any[]) => void;
 
 class OktaStrategy extends Strategy {
   public name = 'okta';
@@ -55,7 +51,7 @@ class OktaStrategy extends Strategy {
       params,
       callback?: Oauth2tokenCallback
     ) => {
-      const _params: any = params || {};
+      const _params: { grant_type: string } = params || {};
       const _codeParam =
         params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
       params[_codeParam] = code;
@@ -68,9 +64,11 @@ class OktaStrategy extends Strategy {
             'base64'
           ),
       };
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       this._oauth2._request(
         'POST',
+        /* eslint-disable @typescript-eslint/ban-ts-comment */
         // @ts-ignore
         this._oauth2._getAccessTokenUrl(),
         postHeaders,
@@ -78,22 +76,11 @@ class OktaStrategy extends Strategy {
         null,
         function (error, data, _response) {
           if (error && callback) {
-            callback(error, '', '', null);
+            callback(error);
           } else {
-            let results;
-            try {
-              // As of http://tools.ietf.org/html/draft-ietf-oauth-v2-07
-              // responses should be in JSON
-              results = JSON.parse(data as string);
-            } catch (e) {
-              // .... However both Facebook + Github currently use rev05 of the spec
-              // and neither seem to specify a content-type correctly in their response headers :(
-              // clients of these services will suffer a *minor* performance cost of the exception
-              // being thrown
-              results = queryString.parse(data as string);
-            }
-            var access_token = results['access_token'];
-            var refresh_token = results['refresh_token'];
+            const results = JSON.parse(data as string);
+            const access_token = results['access_token'];
+            const refresh_token = results['refresh_token'];
             delete results['refresh_token'];
             if (callback) {
               callback(null, access_token, refresh_token, results); // callback results =-=
@@ -104,8 +91,9 @@ class OktaStrategy extends Strategy {
     };
   }
 
-  userProfile(accessToken: string, done: DoneCallback) {
+  userProfile(accessToken: string, done: DoneCallback): void {
     const postHeaders = { Authorization: 'Bearer ' + accessToken };
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     // @ts-ignore
     this._oauth2._request(
       'POST',
