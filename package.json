@@ -28,10 +28,11 @@
   },
   "homepage": "https://github.com/antoinejaussoin/passport-okta-oauth20#readme",
   "dependencies": {
-    "passport-oauth2": "^1.6.0",
-    "querystring": "^0.2.1"
+    "node-fetch": "^2.6.1",
+    "passport-oauth2": "^1.6.0"
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.5.10",
     "@types/jest": "^26.0.23",
     "@types/node": "^16.0.0",
     "@types/passport-oauth2": "^1.4.10",

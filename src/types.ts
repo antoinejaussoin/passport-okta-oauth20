@@ -34,19 +34,17 @@ export type OktaStrategyOptions = {
   callbackURL: string;
 };
 
-export type OktaProfileEmail = { value: string };
-
 export type OktaProfile = {
   /**
    * Authentication ID (a.k.a "sub" in Okta's response)
    */
   id: string;
   /**
-   * Display Name (usually your full name, e.g. Alan Smith)
+   * User's Display Name (usually their full name, e.g. Alan Smith)
    */
   displayName: string;
   /**
-   * Your username (usually your email)
+   * User's username (usually their email)
    */
   username: string;
   /**
@@ -62,30 +60,25 @@ export type OktaProfile = {
    */
   updatedAt: number;
   /**
-   * Whether your email was verified
+   * Whether the user's email was verified
    */
   emailVerified: boolean;
   /**
-   * Name details
+   * User's full name (same as displayName, e.g. Alan Smith)
    */
-  name: {
-    /**
-     * Your full name (same as displayName, e.g. Alan Smith)
-     */
-    fullName: string;
-    /**
-     * Your last name (e.g. Smith)
-     */
-    familyName: string;
-    /**
-     * Your first name (e.g. Alan)
-     */
-    givenName: string;
-  };
+  fullName: string;
   /**
-   * List of emails
+   * User's last name (e.g. Smith)
    */
-  emails: OktaProfileEmail[];
+  familyName: string;
+  /**
+   * User's first name (e.g. Alan)
+   */
+  givenName: string;
+  /**
+   * User's email. Okta only returns one email.
+   */
+  email: string;
   /**
    * Raw response as received from Okta
    */
