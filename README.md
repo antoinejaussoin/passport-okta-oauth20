@@ -13,10 +13,9 @@
 
 ## Usage
 
-- Import: `import { Strategy as OktaStrategy } from 'passport-okta-oauth20';`
-- Profit:
-
 ```tsx
+import { Strategy as OktaStrategy } from 'passport-okta-oauth20';
+
 passport.use(
   new OktaStrategy(
     {
@@ -27,6 +26,7 @@ passport.use(
       callbackURL: 'http://localhost:3000/api/auth/okta/callback',
     },
     function (accessToken, refreshToken, profile, done) {
+      // Do something with the profile
       return done(null, profile);
     }
   )
@@ -34,13 +34,6 @@ passport.use(
 ```
 
 ## Profile
-
-You can access to the profile type by importing it:
-- `import { OktaProfile } from 'passport-okta-oauth20'`
-
-The profile given by the strategy callback is of course typed.
-
-Example profile:
 
 ```js
 {
@@ -59,6 +52,14 @@ Example profile:
   _json: Object // Raw response from Okta
 }
 ```
+
+## TypeScript
+
+If you are using TypeScript, you can import the following types:
+
+`import { OktaProfile, OktaStrategyOptions } from 'passport-okta-oauth20'`
+
+
 
 ## Change Log
 
