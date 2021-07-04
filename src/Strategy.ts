@@ -23,24 +23,24 @@ type AuthorizationParams = {
   idp?: string;
 };
 
-function toBaseStrategyOption(
+function toInternalStrategyOption(
   options: OktaStrategyOptions
 ): InternalStrategyOptions {
   return {
     ...options,
-    authorizationURL: options.audience + '/oauth2/v1/authorize',
-    tokenURL: options.audience + '/oauth2/v1/token',
-    userInfoUrl: options.audience + '/oauth2/v1/userinfo',
+    authorizationURL: `${options.audience}/oauth2/v1/authorize`,
+    tokenURL: `${options.audience}/oauth2/v1/token`,
+    userInfoUrl: `${options.audience}/oauth2/v1/userinfo`,
     state: true,
   };
 }
 
 class OktaStrategy extends Strategy {
   public name = 'okta';
-  private options: InternalStrategyOptions;
+  public options: InternalStrategyOptions;
   constructor(options: OktaStrategyOptions, verify: OktaCallback) {
-    super(toBaseStrategyOption(options), verify);
-    this.options = toBaseStrategyOption(options);
+    super(toInternalStrategyOption(options), verify);
+    this.options = toInternalStrategyOption(options);
   }
 
   userProfile(accessToken: string, done: DoneCallback): void {
@@ -49,7 +49,8 @@ class OktaStrategy extends Strategy {
       headers: { Authorization: 'Bearer ' + accessToken },
     }).then((response) => {
       if (!response.ok) {
-        response.text().then((err) => {
+        response.json().then((err) => {
+          console.error('Error while fetching the user profile: ', err);
           return done(
             new InternalOAuthError('Error while fetching the user profile', err)
           );
@@ -60,12 +61,10 @@ class OktaStrategy extends Strategy {
             id: json.sub,
             displayName: json.name,
             username: json.preferred_username,
-            name: {
-              fullName: json.name,
-              familyName: json.family_name,
-              givenName: json.given_name,
-            },
-            emails: [{ value: json.email }],
+            fullName: json.name,
+            familyName: json.family_name,
+            givenName: json.given_name,
+            email: json.email,
             zoneInfo: json.zoneinfo,
             updatedAt: json.updated_at,
             emailVerified: json.email_verified,
