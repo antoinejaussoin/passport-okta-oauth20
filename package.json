@@ -5,12 +5,12 @@
   "main": "dist/src/index.js",
   "engines" : { "node" : ">=12.0.0" },
   "scripts": {
-    "test": "yarn jest ./src",
-    "test-ci": "yarn test && yarn jest ./dist",
-    "lint": "eslint . --ext .ts",
+    "test": "jest ./src/**/*",
+    "test-transpiled": "jest ./dist/**/*",
     "test-watch": "yarn test --watch",
+    "lint": "eslint . --ext .ts",
     "build": "tsc --build",
-    "prepack": "yarn lint && yarn test-ci && yarn build"
+    "prepack": "yarn lint && yarn test && yarn build && yarn test-transpiled"
   },
   "repository": {
     "type": "git",

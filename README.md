@@ -61,7 +61,8 @@ Example profile:
 
 - Testing on Node 12, 14 and 16
 - Replace `.npmignore` by a whitelist (`files`) in `package.json`
-- Restrict to Node >= 12 (but will probably work with older version)
+- Restrict to Node >= 12 (but will probably work with older version.)
+- Testing both the original TypeScript code and the transpiled JS code
 
 ### Version 1.0.0
 
