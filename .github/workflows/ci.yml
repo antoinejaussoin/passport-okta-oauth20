@@ -9,12 +9,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [ '12', '14', '16' ]
+    name: Testing on Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: ${{ matrix.node }}
       - run: yarn
       - run: yarn build
       - run: yarn test
+      - run: yarn test-transpiled
       - run: yarn lint

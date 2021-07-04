@@ -1,5 +1,10 @@
 # passport-okta-oauth20
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/antoinejaussoin/passport-okta-oauth20)
+![Licence](https://img.shields.io/npm/l/passport-okta-oauth20)
+![Code Quality](https://img.shields.io/npms-io/quality-score/passport-okta-oauth20)
+![Maintenance](https://img.shields.io/npms-io/maintenance-score/passport-okta-oauth20)
+
 [Okta](https://www.okta.com) OAuth 2.0 provider for [Passport](https://www.passportjs.org) with TypeScript support.
 
 ## Installation
@@ -8,10 +13,9 @@
 
 ## Usage
 
-- Import: `import { Strategy as OktaStrategy } from 'passport-okta-oauth20';`
-- Profit:
-
 ```tsx
+import { Strategy as OktaStrategy } from 'passport-okta-oauth20';
+
 passport.use(
   new OktaStrategy(
     {
@@ -22,6 +26,7 @@ passport.use(
       callbackURL: 'http://localhost:3000/api/auth/okta/callback',
     },
     function (accessToken, refreshToken, profile, done) {
+      // Do something with the profile
       return done(null, profile);
     }
   )
@@ -29,13 +34,6 @@ passport.use(
 ```
 
 ## Profile
-
-You can access to the profile type by importing it:
-- `import { OktaProfile } from 'passport-okta-oauth20'`
-
-The profile given by the strategy callback is of course typed.
-
-Example profile:
 
 ```js
 {
@@ -55,7 +53,22 @@ Example profile:
 }
 ```
 
+## TypeScript
+
+If you are using TypeScript, you can import the following types:
+
+`import { OktaProfile, OktaStrategyOptions } from 'passport-okta-oauth20'`
+
+
+
 ## Change Log
+
+### Version 1.0.1
+
+- Testing on Node 12, 14 and 16
+- Replace `.npmignore` by a whitelist (`files`) in `package.json`
+- Restrict to Node >= 12 (but will probably work with older version.)
+- Testing both the original TypeScript code and the transpiled JS code
 
 ### Version 1.0.0
 
