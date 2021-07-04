@@ -55,6 +55,17 @@ Example profile:
 }
 ```
 
+## Change Log
+
+### Version 1.0.0
+
+- Functional parity with [passport-okta-oauth](https://github.com/techstars-archive/passport-okta-oauth)
+- Full TypeScript support
+- Simplified logic and up-to-date dependencies
+- Very lightweight NPM package (6.2 kB)
+- Test coverage
+- Linting
+
 ## Prior art
 
 This repository is loosely based on [passport-okta-oauth](https://github.com/techstars-archive/passport-okta-oauth).

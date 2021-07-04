@@ -7,7 +7,8 @@
     "test": "yarn jest ./src",
     "lint": "eslint . --ext .ts",
     "test-watch": "yarn test --watch",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "prepack": "yarn build"
   },
   "repository": {
     "type": "git",
