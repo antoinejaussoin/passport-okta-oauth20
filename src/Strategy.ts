@@ -1,5 +1,4 @@
 import { Strategy, StrategyOptions, InternalOAuthError } from 'passport-oauth2';
-import queryString from 'querystring';
 import { OktaProfile, OktaStrategyOptions } from './types';
 
 type DoneCallback = (
@@ -23,72 +22,24 @@ type AuthorizationParams = {
   idp?: string;
 };
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type Oauth2tokenCallback = (...params: any[]) => void;
+function toBaseStrategyOption(
+  options: OktaStrategyOptions
+): InternalStrategyOptions {
+  return {
+    ...options,
+    authorizationURL: options.audience + '/oauth2/v1/authorize',
+    tokenURL: options.audience + '/oauth2/v1/token',
+    userInfoUrl: options.audience + '/oauth2/v1/userinfo',
+    state: true,
+  };
+}
 
 class OktaStrategy extends Strategy {
   public name = 'okta';
   private options: InternalStrategyOptions;
   constructor(options: OktaStrategyOptions, verify: OktaCallback) {
-    super(
-      {
-        ...options,
-        authorizationURL: options.audience + '/oauth2/v1/authorize',
-        tokenURL: options.audience + '/oauth2/v1/token',
-        state: true,
-      },
-      verify
-    );
-    this.options = {
-      ...options,
-      authorizationURL: options.audience + '/oauth2/v1/authorize',
-      tokenURL: options.audience + '/oauth2/v1/token',
-      userInfoUrl: options.audience + '/oauth2/v1/userinfo',
-      state: true,
-    };
-    this._oauth2.getOAuthAccessToken = (
-      code,
-      params,
-      callback?: Oauth2tokenCallback
-    ) => {
-      const _params: { grant_type: string } = params || {};
-      const _codeParam =
-        params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
-      params[_codeParam] = code;
-      const postData = queryString.stringify(_params);
-      const postHeaders = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization:
-          'Basic: ' +
-          Buffer.from(options.clientID + ':' + options.clientSecret).toString(
-            'base64'
-          ),
-      };
-      /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      this._oauth2._request(
-        'POST',
-        /* eslint-disable @typescript-eslint/ban-ts-comment */
-        // @ts-ignore
-        this._oauth2._getAccessTokenUrl(),
-        postHeaders,
-        postData,
-        null,
-        function (error, data, _response) {
-          if (error && callback) {
-            callback(error);
-          } else {
-            const results = JSON.parse(data as string);
-            const access_token = results['access_token'];
-            const refresh_token = results['refresh_token'];
-            delete results['refresh_token'];
-            if (callback) {
-              callback(null, access_token, refresh_token, results); // callback results =-=
-            }
-          }
-        }
-      );
-    };
+    super(toBaseStrategyOption(options), verify);
+    this.options = toBaseStrategyOption(options);
   }
 
   userProfile(accessToken: string, done: DoneCallback): void {
@@ -104,7 +55,7 @@ class OktaStrategy extends Strategy {
       function (err, body, _res) {
         if (err) {
           return done(
-            new InternalOAuthError('failed to fetch user profile', err)
+            new InternalOAuthError('Error while fetching the user profile', err)
           );
         }
         try {
