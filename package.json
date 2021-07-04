@@ -6,11 +6,11 @@
   "engines" : { "node" : ">=12.0.0" },
   "scripts": {
     "test": "yarn jest ./src",
-    "test-ci": "yarn jest ./dist",
+    "test-ci": "yarn test && yarn jest ./dist",
     "lint": "eslint . --ext .ts",
     "test-watch": "yarn test --watch",
     "build": "tsc --build",
-    "prepack": "yarn lint && yarn test && yarn build"
+    "prepack": "yarn lint && yarn test-ci && yarn build"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "url": "https://github.com/antoinejaussoin/passport-okta-oauth20/issues"
   },
   "homepage": "https://github.com/antoinejaussoin/passport-okta-oauth20#readme",
-  "files": ["dist/src/**/*"],
+  "files": ["dist/src/*.ts", "dist/src/*.js", "dist/src/*.map"],
   "dependencies": {
     "node-fetch": "^2.6.1",
     "passport-oauth2": "^1.6.0"
