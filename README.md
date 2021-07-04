@@ -1,7 +1,7 @@
 # passport-okta-oauth20
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/antoinejaussoin/passport-okta-oauth20)
-![Dependencies](https://img.shields.io/depfu/antoinejaussoin/passport-okta-oauth20)
+![Licence](https://img.shields.io/npm/l/passport-okta-oauth20)
 ![Code Quality](https://img.shields.io/npms-io/quality-score/passport-okta-oauth20)
 ![Maintenance](https://img.shields.io/npms-io/maintenance-score/passport-okta-oauth20)
 
