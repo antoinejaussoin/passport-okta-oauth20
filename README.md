@@ -33,6 +33,15 @@ passport.use(
 );
 ```
 
+## Custom Authorisation Server
+
+You can also specify the property `authorizationId` to turn the authorizationURL from `https://acme.okta.com/oauth2/v1/authorize` to `https://acme.okta.com/oauth2/foobar/v1/authorize` if:
+
+- `authorizationId` is `foobar`, and
+- `audience` is `https://acme.okta.com`
+
+This is optional.
+
 ## Profile
 
 ```js
