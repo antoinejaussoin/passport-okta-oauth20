@@ -33,6 +33,15 @@ passport.use(
 );
 ```
 
+## Custom Authorisation Server
+
+You can also specify the property `authorizationId` to turn the authorizationURL from `https://acme.okta.com/oauth2/v1/authorize` to `https://acme.okta.com/oauth2/foobar/v1/authorize` if:
+
+- `authorizationId` is `foobar`, and
+- `audience` is `https://acme.okta.com`
+
+This is optional.
+
 ## Profile
 
 ```js
@@ -59,9 +68,12 @@ If you are using TypeScript, you can import the following types:
 
 `import { OktaProfile, OktaStrategyOptions } from 'passport-okta-oauth20'`
 
-
-
 ## Change Log
+
+### Version 1.1.0
+
+- Adding an optional parameter, `authorizationId`, to use a custom authorisation server. 👏 Thanks [@fpunny](https://github.com/fpunny) for the PR ([#6](https://github.com/antoinejaussoin/passport-okta-oauth20/pull/6)).
+- ⏫ Upgrading dependencies
 
 ### Version 1.0.1
 
