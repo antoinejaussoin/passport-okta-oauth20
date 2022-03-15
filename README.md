@@ -73,6 +73,7 @@ If you are using TypeScript, you can import the following types:
 ### Version 1.1.0
 
 - Adding an optional parameter, `authorizationId`, to use a custom authorisation server. 👏 Thanks [@fpunny](https://github.com/fpunny) for the PR ([#6](https://github.com/antoinejaussoin/passport-okta-oauth20/pull/6)).
+- ⏫ Upgrading dependencies
 
 ### Version 1.0.1
 

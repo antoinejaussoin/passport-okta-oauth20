@@ -59,7 +59,8 @@ class OktaStrategy extends Strategy {
           );
         });
       } else {
-        response.json().then((json) => {
+        /* eslint-disable-next-line */
+        response.json().then((json: any) => {
           const profile: OktaProfile = {
             id: json.sub,
             displayName: json.name,
