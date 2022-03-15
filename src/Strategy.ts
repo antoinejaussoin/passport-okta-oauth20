@@ -26,7 +26,9 @@ type AuthorizationParams = {
 function toInternalStrategyOption(
   options: OktaStrategyOptions
 ): InternalStrategyOptions {
-  const authIssuer = `${options.audience}/oauth2${options.authorizationId ? '/' + options.authorizationId : ''}`;
+  const authIssuer = `${options.audience}/oauth2${
+    options.authorizationId ? '/' + options.authorizationId : ''
+  }`;
   return {
     ...options,
     authorizationURL: `${authIssuer}/v1/authorize`,

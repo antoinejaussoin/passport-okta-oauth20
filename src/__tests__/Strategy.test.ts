@@ -32,7 +32,10 @@ describe('Okta Strategy', () => {
   });
 
   it('Should have correct URLs for given Authorization ID', () => {
-    const strategy = new Strategy({ ...fakeOptions, authorizationId: 'default' }, console.log);
+    const strategy = new Strategy(
+      { ...fakeOptions, authorizationId: 'default' },
+      console.log
+    );
     expect(strategy.options.authorizationURL).toBe(
       'https://acme.okta.com/oauth2/default/v1/authorize'
     );
