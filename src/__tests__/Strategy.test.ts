@@ -31,6 +31,19 @@ describe('Okta Strategy', () => {
     );
   });
 
+  it('Should have correct URLs for given Authorization ID', () => {
+    const strategy = new Strategy({ ...fakeOptions, authorizationId: 'default' }, console.log);
+    expect(strategy.options.authorizationURL).toBe(
+      'https://acme.okta.com/oauth2/default/v1/authorize'
+    );
+    expect(strategy.options.tokenURL).toBe(
+      'https://acme.okta.com/oauth2/default/v1/token'
+    );
+    expect(strategy.options.userInfoUrl).toBe(
+      'https://acme.okta.com/oauth2/default/v1/userinfo'
+    );
+  });
+
   it('Should have stored the scope', () => {
     const strategy = new Strategy(fakeOptions, console.log);
     expect(strategy.options.scope).toStrictEqual(['foo', 'bar']);
